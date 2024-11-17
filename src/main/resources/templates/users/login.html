@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>맛집블로그 - 로그인</title>
+    <style>
+        /* 기본 스타일 설정 */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        .login-container {
+            background-color: #e0e0e0;
+            padding: 30px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-container label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: left;
+            color: #333;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .login-container button:hover {
+            background-color: #555;
+        }
+
+        .signup-link {
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        .signup-link a {
+            color: #333;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<h1>맛집블로그</h1>
+<p>나만 알기 아까운 전국 각지 맛집들을 공유해보세요!</p>
+
+<div class="login-container">
+    <form th:action="@{/accounts/login}" method="post">
+        <!-- Id 입력 필드 -->
+        <label for="username">Id</label>
+        <input type="text" id="username" name="username" placeholder="Value" required />
+
+        <!-- Password 입력 필드 -->
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Value" required />
+
+        <!-- 로그인 버튼 -->
+        <button type="submit">로그인</button>
+    </form>
+
+    <!-- 회원가입 링크 -->
+    <div class="signup-link">
+        <p>아직 회원이 아니시라면? <a th:href="@{/accounts/sign-up}">회원가입</a></p>
+    </div>
+</div>
+
+</body>
+</html>
