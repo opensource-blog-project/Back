@@ -21,8 +21,8 @@ public class LikeController {
     @PostMapping("")
     public ResponseEntity<Void> pushLike(@Valid @RequestBody RequestLike requestLike){
        int postId = requestLike.postId();
-       String username = requestLike.username();
-       postLikeService.pushLike(postId,username);
+       String userId = requestLike.userId();
+       postLikeService.pushLike(postId,userId);
        return ResponseEntity.ok().build();
    }
 }

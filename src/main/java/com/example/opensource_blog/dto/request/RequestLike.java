@@ -8,6 +8,6 @@ public record RequestLike(
         Integer postId,
 
         @NotBlank
-        String username
+        String userId
 ) {
 }

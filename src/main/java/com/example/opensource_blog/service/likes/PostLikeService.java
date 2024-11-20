@@ -23,11 +23,11 @@ public class PostLikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void pushLike(int postId,String username) {
+    public void pushLike(int postId,String userId) {
         log.info("{} : {}",getClass().getSimpleName(),"pushLike(Long,String)");
 
         var post = postRepository.findByPostId(postId).orElseThrow(EntityNotFoundException::new);
-        var usrAccount =  userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        var usrAccount =  userRepository.findByUserId(userId).orElseThrow(EntityNotFoundException::new);
         Optional<Like> alreadyPushedLike = alreadyPushedLike(post, usrAccount);
 
         if(alreadyPushedLike.isPresent()) {
