@@ -26,7 +26,9 @@ public class UserJoinService {
 
     public void save(RequestJoin join) {
         String encodedPassword = passwordEncoder.encode(join.password());
-        UserAccount userAccount = new UserAccount(join.username(), encodedPassword);
+        System.out.println(encodedPassword.length());
+        UserAccount userAccount = UserAccount.of(join.userId(),encodedPassword,join.username());
+
         userRepository.save(userAccount);
     }
 
