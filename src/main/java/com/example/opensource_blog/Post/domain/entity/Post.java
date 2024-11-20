@@ -1,5 +1,6 @@
 package com.example.opensource_blog.Post.domain.entity;
 
+import com.example.opensource_blog.domain.users.UserAccount;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,10 +14,11 @@ import java.util.List;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer postid;
+    private Integer postId;
 
-    @Column(nullable = false)
-    private String userid;
+    @ManyToOne(fetch = FetchType.EAGER) // 기본값은 EAGER
+    @JoinColumn(name = "user_id", nullable = false)  // 외래 키 매핑
+    private UserAccount user;  // User 엔티티와 매핑
 
     @Column(nullable = false)
     private String title;

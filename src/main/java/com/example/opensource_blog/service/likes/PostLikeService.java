@@ -1,9 +1,10 @@
 package com.example.opensource_blog.service.likes;
 
+import com.example.opensource_blog.Post.domain.Repository.PostRepository;
+import com.example.opensource_blog.Post.domain.entity.Post;
 import com.example.opensource_blog.domain.likes.Like;
 import com.example.opensource_blog.domain.likes.LikeRepository;
-import com.example.opensource_blog.domain.post.Post;
-import com.example.opensource_blog.domain.post.PostRepository;
+
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,7 +27,8 @@ public class PostLikeService {
     public void pushLike(int postId,String userId) {
         log.info("{} : {}",getClass().getSimpleName(),"pushLike(Long,String)");
 
-        var post = postRepository.findByPostId(postId).orElseThrow(EntityNotFoundException::new);
+
+        var post = postRepository.findById(postId).orElseThrow(EntityNotFoundException::new);
         var usrAccount =  userRepository.findByUserId(userId).orElseThrow(EntityNotFoundException::new);
         Optional<Like> alreadyPushedLike = alreadyPushedLike(post, usrAccount);
 

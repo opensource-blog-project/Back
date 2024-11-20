@@ -25,7 +25,7 @@ public class PostImages {
     private String imageurl;
 
     @Lob
-    @Column(name = "imagedata", nullable = false)
+    @Column(name = "imagedata", columnDefinition = "LONGBLOB")
     private byte[] imagedata;  // BLOB 데이터 저장
 
     @Override
