@@ -10,12 +10,15 @@ import java.util.List;
 
 public class UserInfo implements UserDetails {
 
-    private String username;
+    private String userId;
     private String password;
+    private String username;
+
 
     public UserInfo(UserAccount entity) {
-        username = entity.getUsername();
+        userId = entity.getUserId();
         password = entity.getPassword();
+        username = entity.getUsername();
     }
 
     @Override
@@ -30,7 +33,7 @@ public class UserInfo implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.userId;
     }
 
 }

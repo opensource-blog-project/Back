@@ -37,7 +37,7 @@ public class UserController {
 
         // 유효성 검사 처리
         errorProcess(errors);
-        ResponseLogin token = loginService.authenticate(requestLogin.username(),requestLogin.password());
+        ResponseLogin token = loginService.authenticate(requestLogin.userId(),requestLogin.password());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(CustomJwtFilter.AUTHORIZATION_HEADER,"Bearer "+token.accessToken());
