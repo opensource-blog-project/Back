@@ -1,7 +1,7 @@
 package com.example.opensource_blog.service.likes;
 
-import com.example.opensource_blog.Post.domain.Repository.PostRepository;
-import com.example.opensource_blog.Post.domain.entity.Post;
+import com.example.opensource_blog.domain.post.PostRepository;
+import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.domain.likes.Like;
 import com.example.opensource_blog.domain.likes.LikeRepository;
 

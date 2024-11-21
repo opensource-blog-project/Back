@@ -1,6 +1,6 @@
 package com.example.opensource_blog.domain.likes;
 
-import com.example.opensource_blog.Post.domain.entity.Post;
+import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.domain.users.UserAccount;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -21,7 +21,7 @@ public class Like {
     private Integer likeId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "postId", referencedColumnName = "postId", nullable = false)
+    @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
     private Post post;
 
     @ManyToOne(optional = false)

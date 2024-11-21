@@ -1,8 +1,8 @@
-package com.example.opensource_blog.Post.service;
+package com.example.opensource_blog.service.post;
 
-import com.example.opensource_blog.Post.domain.Repository.PostImagesRepository;
-import com.example.opensource_blog.Post.domain.entity.Post;
-import com.example.opensource_blog.Post.domain.entity.PostImages;
+import com.example.opensource_blog.domain.post.PostImagesRepository;
+import com.example.opensource_blog.domain.post.Post;
+import com.example.opensource_blog.domain.post.PostImages;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class PostImageService {
             try {
                 PostImages image = new PostImages();
                 image.setPost(post);
-                image.setImageurl(file.getOriginalFilename());  // 파일명 저장
-                image.setImagedata(file.getBytes());  // 이미지 데이터 저장
+                image.setImageUrl(file.getOriginalFilename());  // 파일명 저장
+                image.setImageData(file.getBytes());  // 이미지 데이터 저장
                 postImagesRepository.save(image);
                 post.getImages().add(image);
             } catch (IOException e) {

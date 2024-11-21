@@ -1,4 +1,4 @@
-package com.example.opensource_blog.Post.domain.entity;
+package com.example.opensource_blog.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -14,26 +14,26 @@ public class PostImages {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer imageid;
+    private Long imageId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "postid", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false)
     @JsonBackReference  // 자식 참조
     private Post post;
 
-    @Column(nullable = false)
-    private String imageurl;
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
 
     @Lob
-    @Column(name = "imagedata", columnDefinition = "LONGBLOB")
-    private byte[] imagedata;  // BLOB 데이터 저장
+    @Column(name = "image_data", columnDefinition = "LONGBLOB")
+    private byte[] imageData;  // BLOB 데이터 저장
 
     @Override
     public String toString() {
         return "PostImages{" +
-                "imageid=" + imageid +
-                ", imageurl='" + imageurl + '\'' +
-                ", imagedata=" + Arrays.toString(imagedata) +
+                "image_id=" + imageId +
+                ", image_url='" + imageUrl + '\'' +
+                ", image_data=" + Arrays.toString(imageData) +
                 '}';
     }
 }

@@ -1,6 +1,7 @@
-package com.example.opensource_blog.Post.domain.entity;
+package com.example.opensource_blog.domain.post;
 
 import com.example.opensource_blog.domain.users.UserAccount;
+import com.example.opensource_blog.service.user.UserInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,8 +14,9 @@ import java.util.List;
 @Entity
 public class Post {
     @Id
+    @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer postId;
+    private int postId;
 
     @ManyToOne(fetch = FetchType.EAGER) // 기본값은 EAGER
     @JoinColumn(name = "user_id", nullable = false)  // 외래 키 매핑

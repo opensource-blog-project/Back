@@ -1,12 +1,12 @@
-package com.example.opensource_blog.Post.service;
+package com.example.opensource_blog.service.post;
 
-import com.example.opensource_blog.Post.domain.Repository.PostImagesRepository;
-import com.example.opensource_blog.Post.domain.Repository.PostRepository;
-import com.example.opensource_blog.Post.domain.entity.Post;
-import com.example.opensource_blog.Post.dto.PostDTO;
-import com.example.opensource_blog.Post.dto.request.PostRequestDTO;
+import com.example.opensource_blog.domain.post.PostImagesRepository;
+import com.example.opensource_blog.domain.post.PostRepository;
+import com.example.opensource_blog.domain.post.Post;
+import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
+import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,13 +28,14 @@ public class PostService {
     }
 
     @Transactional
-    public Post createPost(PostRequestDTO postRequestDTO, List<MultipartFile> images, String userid) {
-        // User 엔티티 조회
-        UserAccount user = userRepository.findById(userid)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userid));
-
+    public Post createPost(PostRequestDTO postRequestDTO, List<MultipartFile> images, UserInfo userInfo) {
         // PostDTO를 Post 엔티티로 변환
-        Post post = postRequestDTO.toEntity(user);
+        Post post = postRequestDTO.toEntity(postRequestDTO);
+        // UserInfo에서 제공된 username으로 현재 로그인된 사용자 정보를 조회
+        UserAccount currentUser = userRepository.findByUserId(userInfo.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + userInfo.getUsername()));
+        // 조회한 사용자 정보를 Post 엔티티에 설정
+        post.setUser(currentUser);
         // Post 저장
         Post savedPost = postRepository.save(post);
         // 이미지 파일 저장 처리
@@ -44,13 +45,10 @@ public class PostService {
     }
 
     @Transactional
-    public Post updatePost(int id, PostRequestDTO postRequestDTO, List<MultipartFile> images, String userId) {
+    public Post updatePost(int id, PostRequestDTO postRequestDTO, List<MultipartFile> images, UserInfo userInfo) {
         // 기존 게시글 조회
         Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-        if (!post.getUser().getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
-        }
-        // 게시글 내용 업데이트
+        // PostDTO를 Post 엔티티로 변환
         post.setTitle(postRequestDTO.getTitle());
         post.setContent(postRequestDTO.getContent());
         post.setRestaurant(postRequestDTO.getRestaurant());
@@ -74,18 +72,16 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public void deletePost(int postId, String userId) {
+    public void deletePost(int postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
-        if (!post.getUser().getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
-        }
+        // 이미지 삭제
         postImageService.deleteImagesByPost(post);
         // 게시글 삭제
         postRepository.deleteById(postId);
     }
 
-    public Post getPostById(int postid) {
-        return postRepository.findById(postid)
+    public Post getPostById(int postId) {
+        return postRepository.findById(postId)
                 .orElse(null); // 없는 경우 null 반환
     }
     public Post getPostWithImages(int id) {
@@ -97,7 +93,7 @@ public class PostService {
 //            try {
 //                PostImages image = new PostImages();
 //                image.setPost(post);
-//                image.setImageurl(file.getOriginalFilename());  // 파일명 저장
+//                image.setImageUrl(file.getOriginalFilename());  // 파일명 저장
 //                image.setImagedata(file.getBytes());  // 이미지 데이터 저장
 //                postImagesRepository.save(image);
 //                post.getImages().add(image);
