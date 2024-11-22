@@ -3,11 +3,16 @@ package com.example.opensource_blog.controller;
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.dto.response.PostResponseDTO;
+import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.post.PostService;
 import com.example.opensource_blog.jwt.TokenProvider;
 import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +30,13 @@ public class PostController {
     @Autowired
     private TokenProvider tokenprovider; //jwt 유틸리티
 
+    @GetMapping("/list")
+    public ResponseEntity<Page<PostResponseDTO>> postList(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        Page<PostResponseDTO> postList = postService.getAllPosts(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(postList);
+    }
 
     //게시글 생성
     @PostMapping("/create")

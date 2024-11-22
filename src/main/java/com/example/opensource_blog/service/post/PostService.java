@@ -1,17 +1,24 @@
 package com.example.opensource_blog.service.post;
 
+import com.example.opensource_blog.domain.comment.Comment;
 import com.example.opensource_blog.domain.post.PostImagesRepository;
 import com.example.opensource_blog.domain.post.PostRepository;
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
+import com.example.opensource_blog.dto.response.PostResponseDTO;
+import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -25,6 +32,15 @@ public class PostService {
         this.postImagesRepository = postImagesRepository;
         this.userRepository = userRepository;
         this.postImageService = postImageService;
+    }
+
+    @Transactional
+    public Page<PostResponseDTO> getAllPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAllWithUser(pageable);
+        List<PostResponseDTO> postList = posts.getContent().stream()
+                .map(PostResponseDTO::new) // 생성자를 통해 DTO 변환
+                .collect(Collectors.toList());
+        return new PageImpl<>(postList, pageable, posts.getTotalElements());
     }
 
     @Transactional

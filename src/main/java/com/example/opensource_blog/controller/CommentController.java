@@ -24,7 +24,7 @@ public class CommentController {
     @GetMapping("/list")
     public ResponseEntity<Page<ResCommentDto>> commentList(
             @PathVariable int postId,
-            @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Page<ResCommentDto> commentList = commentService.getAllComments(postId, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(commentList);
