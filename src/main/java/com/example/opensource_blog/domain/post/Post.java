@@ -1,10 +1,12 @@
-package com.example.opensource_blog.Post.domain.entity;
+package com.example.opensource_blog.domain.post;
 
 import com.example.opensource_blog.domain.users.UserAccount;
+import com.example.opensource_blog.domain.comment.Comment;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +15,9 @@ import java.util.List;
 @Entity
 public class Post {
     @Id
+    @Column(name = "post_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer postId;
+    private int postId;
 
     @ManyToOne(fetch = FetchType.EAGER) // 기본값은 EAGER
     @JoinColumn(name = "user_id", nullable = false)  // 외래 키 매핑
@@ -33,5 +36,8 @@ public class Post {
     @JsonManagedReference  // 부모 참조
     private List<PostImages> images = new ArrayList<>();  // 빈 리스트로 초기화
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
+    public List<Comment> comments = new ArrayList<>();
 
 }
