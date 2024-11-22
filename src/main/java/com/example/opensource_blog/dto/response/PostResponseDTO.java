@@ -15,6 +15,7 @@ public class PostResponseDTO {
 
     private int postId;
     private String title;
+    private String postWriter;
     private String content;
     private String restaurant;
     private List<String> imageUrls;
@@ -23,6 +24,7 @@ public class PostResponseDTO {
     public PostResponseDTO(Post post) {
         this.postId = post.getPostId();
         this.title = post.getTitle();
+        this.postWriter = post.getUser().getUsername();
         this.content = post.getContent();
         this.restaurant = post.getRestaurant();
         // 이미지 URL 리스트 변환
@@ -30,4 +32,5 @@ public class PostResponseDTO {
                 ? post.getImages().stream().map(image -> image.getImageUrl()).collect(Collectors.toList())
                 : null;
     }
+
 }

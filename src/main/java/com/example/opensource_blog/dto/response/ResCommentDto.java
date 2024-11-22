@@ -12,21 +12,21 @@ import lombok.Setter;
 public class ResCommentDto {
 
     private int commentId;
-    private String content;
-    private String commentWriter; // 댓글 작성자
+    private String commentWriter;
+    private String content;// 댓글 작성자
 
     @Builder
-    public ResCommentDto(int commentId, String content, String commentWriter) {
+    public ResCommentDto(int commentId, String commentWriter, String content) {
         this.commentId = commentId;
-        this.content = content;
         this.commentWriter = commentWriter;
+        this.content = content;
     }
 
     public static ResCommentDto fromEntity(Comment comment) {
         return ResCommentDto.builder()
                 .commentId(comment.getId())
+                .commentWriter(comment.getUser().getUsername())
                 .content(comment.getContent())
-                .commentWriter(comment.getUser().getUserId())
                 .build();
     }
 }
