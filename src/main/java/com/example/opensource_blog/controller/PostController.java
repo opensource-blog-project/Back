@@ -2,6 +2,7 @@ package com.example.opensource_blog.controller;
 
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
+import com.example.opensource_blog.dto.response.PostListResponseDTO;
 import com.example.opensource_blog.dto.response.PostResponseDTO;
 import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.post.PostService;
@@ -31,10 +32,10 @@ public class PostController {
     private TokenProvider tokenprovider; //jwt 유틸리티
 
     @GetMapping("/list")
-    public ResponseEntity<Page<PostResponseDTO>> postList(
+    public ResponseEntity<Page<PostListResponseDTO>> postList(
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        Page<PostResponseDTO> postList = postService.getAllPosts(pageable);
+        Page<PostListResponseDTO> postList = postService.getAllPosts(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
 

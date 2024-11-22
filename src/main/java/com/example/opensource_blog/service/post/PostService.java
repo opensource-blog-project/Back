@@ -7,6 +7,7 @@ import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
+import com.example.opensource_blog.dto.response.PostListResponseDTO;
 import com.example.opensource_blog.dto.response.PostResponseDTO;
 import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.user.UserInfo;
@@ -35,10 +36,10 @@ public class PostService {
     }
 
     @Transactional
-    public Page<PostResponseDTO> getAllPosts(Pageable pageable) {
+    public Page<PostListResponseDTO> getAllPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAllWithUser(pageable);
-        List<PostResponseDTO> postList = posts.getContent().stream()
-                .map(PostResponseDTO::new) // 생성자를 통해 DTO 변환
+        List<PostListResponseDTO> postList = posts.getContent().stream()
+                .map(PostListResponseDTO::fromEntity) // 생성자를 통해 DTO 변환
                 .collect(Collectors.toList());
         return new PageImpl<>(postList, pageable, posts.getTotalElements());
     }
