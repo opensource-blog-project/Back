@@ -35,3 +35,13 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Docker specific
+.dockerignore
+docker-compose.override.yml
+
+# Environment variables
+.env
+.env.*
+
+mysql
