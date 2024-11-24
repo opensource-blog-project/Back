@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class PostResponseDTO {
 
-    private int postId;
+
+    private int postid;
+    private String username;
     private String title;
     private String postWriter;
     private String content;
@@ -22,7 +24,9 @@ public class PostResponseDTO {
 
     // Post 엔티티를 PostResponseDTO로 변환하는 생성자
     public PostResponseDTO(Post post) {
-        this.postId = post.getPostId();
+
+        this.postid = post.getPostId();
+        this.username = post.getUser().getUsername();
         this.title = post.getTitle();
         this.postWriter = post.getUser().getUsername();
         this.content = post.getContent();
