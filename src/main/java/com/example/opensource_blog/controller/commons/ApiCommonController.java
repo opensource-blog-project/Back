@@ -22,6 +22,8 @@ public class ApiCommonController {
             status = HttpStatus.UNAUTHORIZED;
         } else if (e instanceof AccessDeniedException) {
             status = HttpStatus.FORBIDDEN;
+        }else if (e instanceof IllegalArgumentException) {
+            status = HttpStatus.NOT_FOUND;
         }
 
         JSONData<Object> data = new JSONData<>();

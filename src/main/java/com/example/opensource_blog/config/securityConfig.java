@@ -54,10 +54,10 @@ public class securityConfig {
                                     exception.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler);
                                 });
         http.authorizeHttpRequests(c -> {
-            c.requestMatchers("/api/v1/user",
-                            "/api/v1/user/token",
-                            "/api/v1/user/login",
-                            "/api/v1/user/exists/**").permitAll()
+            c.requestMatchers("/api/user",
+                            "/api/user/token",
+                            "/api/user/login",
+                            "/api/user/exists/**").permitAll()
                     .anyRequest().authenticated();
         });
         return http.build();

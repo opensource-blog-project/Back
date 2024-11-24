@@ -39,6 +39,11 @@ public class PostLikeService {
             likeRepository.save(like);
         }
     }
+    public int getLikeCountByPostId(int postId) {
+        if(!postRepository.existsById(postId))
+            throw new IllegalArgumentException("post not founded"+postId);
+        return likeRepository.countByPost_id(postId);
+    }
     private Optional<Like> alreadyPushedLike(Post post, UserAccount userAccount) {
         log.info("이미 눌린 '좋아요'인지 체크하는 로직 실행");
         return likeRepository.findByPostAndUser(post,userAccount);
