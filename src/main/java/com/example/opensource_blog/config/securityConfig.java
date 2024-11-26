@@ -46,13 +46,12 @@ public class securityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
-
-        http.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-                        .addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
-                        .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .exceptionHandling(exception -> {
-                                    exception.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler);
-                                });
+        http.cors(cors -> cors.disable());
+        http.addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler);
+                });
         http.authorizeHttpRequests(c -> {
             c.requestMatchers("/api/user",
                             "/api/user/token",
