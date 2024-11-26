@@ -21,7 +21,7 @@ public class Like {
     private Integer likeId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "postId", referencedColumnName = "postId", nullable = false)
+    @JoinColumn(name = "post_id", referencedColumnName = "post_id", nullable = false)
     private Post post;
 
     @ManyToOne(optional = false)

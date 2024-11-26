@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record ResponseLogin(
-        String accessToken
+        String accessToken,
+        String username
 ) {
 }

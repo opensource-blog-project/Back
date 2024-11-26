@@ -21,11 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserLoginService loginService;
-    private final UserInfoService infoService;
     private final UserJoinService joinService;
 
     /**
