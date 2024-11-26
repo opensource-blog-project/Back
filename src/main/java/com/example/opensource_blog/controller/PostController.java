@@ -61,7 +61,7 @@ public class PostController {
             @RequestPart("images") List<MultipartFile> images) {
 
         Post createdPost = postService.createPost(postRequestDTO, images, userInfo);
-        PostResponseDTO responseDTO = new PostResponseDTO(createdPost);
+        PostResponseDTO responseDTO = PostResponseDTO.fromEntity(createdPost);
         List<PostHashTag> postHashTags = postHashTageService.getPostHashTagFromPost(createdPost);
         responseDTO.setHashTags(HashTagDto.fromPostHashTags(postHashTags));
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
@@ -99,7 +99,7 @@ public class PostController {
 
         // 이미지 URL 업데이트 처리
         Post updatedPost = postService.updatePost(postId, postRequestDTO, images, userInfo);
-        PostResponseDTO responseDTO = new PostResponseDTO(updatedPost);
+        PostResponseDTO responseDTO = PostResponseDTO.fromEntity(updatedPost);
 
         return ResponseEntity.ok(responseDTO);
     }
@@ -136,7 +136,7 @@ public class PostController {
         if (post == null) {
             return ResponseEntity.notFound().build();
         }
-        PostResponseDTO responseDTO = new PostResponseDTO(post);
+        PostResponseDTO responseDTO = PostResponseDTO.fromEntity(post);
         return ResponseEntity.ok(responseDTO);
     }
 

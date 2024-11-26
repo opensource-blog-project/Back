@@ -2,6 +2,7 @@ package com.example.opensource_blog.dto.response;
 
 import com.example.opensource_blog.domain.hashtag.HashTagDto;
 import com.example.opensource_blog.domain.post.Post;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,21 +20,34 @@ public class PostResponseDTO {
     private String postWriter;
     private String content;
     private String restaurant;
-    private List<String> imageUrls;
+    private byte[] postImage;
     private List<HashTagDto> hashTags;
 
-    // Post 엔티티를 PostResponseDTO로 변환하는 생성자
-    public PostResponseDTO(Post post) {
-        this.postId = post.getPostId();
-        this.title = post.getTitle();
-        this.postWriter = post.getUser().getUsername();
-        this.content = post.getContent();
-        this.restaurant = post.getRestaurant();
-        // 이미지 URL 리스트 변환
-        this.imageUrls = post.getImages() != null
-                ? post.getImages().stream().map(image -> image.getImageUrl()).collect(Collectors.toList())
-                : null;
-        this.hashTags = HashTagDto.fromPostHashTags(post.getPostHashTags());
+    @Builder
+    public PostResponseDTO(int postId, String title, String postWriter, String content, String restaurant, byte[] postImage, List<HashTagDto> hashTags) {
+        this.postId = postId;
+        this.title = title;
+        this.postWriter = postWriter;
+        this.content = content;
+        this.restaurant = restaurant;
+        this.postImage = postImage;
+        this.hashTags = hashTags;
+    }
+
+    // Entity -> DTO
+    public static PostResponseDTO fromEntity(Post post) {
+
+        return PostResponseDTO.builder()
+                .postId(post.getPostId())
+                .title(post.getTitle())
+                .postWriter(post.getUser().getUsername())
+                .content(post.getContent())
+                .restaurant(post.getRestaurant())
+                .postImage(post.getImages() != null
+                        ? post.getImages().getFirst().getImageData() // 첫 번째 이미지의 바이트 데이터 가져오기
+                        : null)
+                .hashTags(HashTagDto.fromPostHashTags(post.getPostHashTags()))
+                .build();
     }
 
 }
