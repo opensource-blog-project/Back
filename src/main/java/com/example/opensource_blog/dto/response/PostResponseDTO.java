@@ -1,5 +1,6 @@
 package com.example.opensource_blog.dto.response;
 
+import com.example.opensource_blog.domain.hashtag.HashTagDto;
 import com.example.opensource_blog.domain.post.Post;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class PostResponseDTO {
     private String content;
     private String restaurant;
     private List<String> imageUrls;
+    private List<HashTagDto> hashTags;
 
     // Post 엔티티를 PostResponseDTO로 변환하는 생성자
     public PostResponseDTO(Post post) {
@@ -31,6 +33,7 @@ public class PostResponseDTO {
         this.imageUrls = post.getImages() != null
                 ? post.getImages().stream().map(image -> image.getImageUrl()).collect(Collectors.toList())
                 : null;
+        this.hashTags = HashTagDto.fromPostHashTags(post.getPostHashTags());
     }
 
 }

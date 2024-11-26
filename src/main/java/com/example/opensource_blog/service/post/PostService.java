@@ -1,6 +1,5 @@
 package com.example.opensource_blog.service.post;
 
-import com.example.opensource_blog.domain.comment.Comment;
 import com.example.opensource_blog.domain.post.PostImagesRepository;
 import com.example.opensource_blog.domain.post.PostRepository;
 import com.example.opensource_blog.domain.post.Post;
@@ -8,10 +7,9 @@ import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
-import com.example.opensource_blog.dto.response.PostResponseDTO;
-import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -21,19 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
     private final PostImagesRepository postImagesRepository;
     private final UserRepository userRepository;
     private final PostImageService postImageService;
-
-    public PostService(PostRepository postRepository, PostImagesRepository postImagesRepository, UserRepository userRepository, PostImageService postImageService) {
-        this.postRepository = postRepository;
-        this.postImagesRepository = postImagesRepository;
-        this.userRepository = userRepository;
-        this.postImageService = postImageService;
-    }
 
     @Transactional
     public Page<PostListResponseDTO> getAllPosts(Pageable pageable) {
@@ -42,6 +34,15 @@ public class PostService {
                 .map(PostListResponseDTO::fromEntity) // 생성자를 통해 DTO 변환
                 .collect(Collectors.toList());
         return new PageImpl<>(postList, pageable, posts.getTotalElements());
+    }
+
+    @Transactional
+    public Page<PostListResponseDTO> search(String keyword, Pageable pageable) {
+        Page<Post> searchResult = postRepository.searchByKeyword(keyword, pageable);
+        List<PostListResponseDTO> postList = searchResult.getContent().stream()
+                .map(PostListResponseDTO::fromEntity) // 생성자를 통해 DTO 변환
+                .collect(Collectors.toList());
+        return new PageImpl<>(postList, pageable, searchResult.getTotalElements());
     }
 
     @Transactional

@@ -1,10 +1,13 @@
 package com.example.opensource_blog.dto.request;
 
+import com.example.opensource_blog.domain.hashtag.HashTagDto;
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.domain.users.UserAccount;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,6 +17,7 @@ public class PostRequestDTO {
     private String title;
     private String content;
     private String restaurant;
+    private List<Long> hashTagIds;
 
     // PostRequestDTO를 Post 엔티티로 변환하는 메서드
     public Post toEntity(PostRequestDTO requestDTO) {

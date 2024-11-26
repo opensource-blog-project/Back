@@ -1,15 +1,16 @@
 package com.example.opensource_blog.controller;
 
+import com.example.opensource_blog.domain.hashtag.HashTagDto;
+import com.example.opensource_blog.domain.hashtag.PostHashTag;
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
 import com.example.opensource_blog.dto.response.PostResponseDTO;
-import com.example.opensource_blog.dto.response.ResCommentDto;
+import com.example.opensource_blog.service.hashtag.HashTageService;
+import com.example.opensource_blog.service.hashtag.PostHashTageService;
 import com.example.opensource_blog.service.post.PostService;
-import com.example.opensource_blog.jwt.TokenProvider;
 import com.example.opensource_blog.service.user.UserInfo;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,21 +23,37 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/posts")
 public class PostController {
-    @Autowired
-    private PostService postService;
-    @Autowired
-    private TokenProvider tokenprovider; //jwt 유틸리티
+    
+    private final PostService postService;
+    private final HashTageService hashTageService;
+    private final PostHashTageService postHashTageService;
 
     @GetMapping("/list")
     public ResponseEntity<Page<PostListResponseDTO>> postList(
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
+            @PageableDefault(size = 10, sort = "postId", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<PostListResponseDTO> postList = postService.getAllPosts(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(postList);
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<Page<PostListResponseDTO>> search(
+            @PageableDefault(size = 10 , sort = "postId", direction = Sort.Direction.DESC) Pageable pageable,
+            @PathVariable String keyword) {
+        Page<PostListResponseDTO> searchResults = postService.search(keyword, pageable);
+        return  ResponseEntity.status(HttpStatus.OK).body(searchResults);
+    }
+
+    @GetMapping("/search-hashtag")
+    public ResponseEntity<Page<PostListResponseDTO>> getPostsByHashTagName(
+            @RequestParam String hashTagName,
+            @PageableDefault(size = 10, sort = "postId",direction = Sort.Direction.DESC)Pageable pageable) {
+        HashTagDto hashTag = hashTageService.getHashTagFromName(hashTagName);
+        Page<PostListResponseDTO> posts = postHashTageService.getPostsByHashTag(hashTag.getHashTagId(), pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
     //게시글 생성
@@ -48,7 +65,8 @@ public class PostController {
 
         Post createdPost = postService.createPost(postRequestDTO, images, userInfo);
         PostResponseDTO responseDTO = new PostResponseDTO(createdPost);
-
+        List<PostHashTag> postHashTags = postHashTageService.getPostHashTagFromPost(createdPost);
+        responseDTO.setHashTags(HashTagDto.fromPostHashTags(postHashTags));
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
