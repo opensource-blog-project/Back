@@ -1,4 +1,4 @@
-FROM openjdk:17-slim
+FROM openjdk:21-slim
 
 # 작업 디렉토리 설정
 WORKDIR /app
