@@ -16,4 +16,21 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user")
     Page<Post> findAllWithUser(Pageable pageable);
+
+    @Query(value = "SELECT b FROM Post b JOIN FETCH b.member " +
+            "WHERE b.title LIKE %:keyword% OR b.content LIKE %:keyword% OR b.member.username LIKE %:keyword%")
+    Page<Post> searchByKeyword(String keyword, Pageable pageable);
+
+//    // 제목 검색
+//    @Query(value = "SELECT p FROM Post p JOIN FETCH p.user WHERE p.title LIKE %:title%")
+//    Page<Post> searchByTitle(String title, Pageable pageable);
+//
+//    // 내용 검색
+//    @Query(value = "SELECT p FROM Post p JOIN FETCH p.user WHERE p.content LIKE %:content%")
+//    Page<Post> searchByContent(String content, Pageable pageable);
+//
+//    // 작성자 검색
+//    @Query(value = "SELECT p FROM Post p JOIN FETCH p.user WHERE p.user.username LIKE %:username%")
+//    Page<Post> searchByUsername(String username, Pageable pageable);
+
 }

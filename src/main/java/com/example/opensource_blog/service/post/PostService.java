@@ -1,7 +1,5 @@
 package com.example.opensource_blog.service.post;
 
-import com.example.opensource_blog.domain.comment.Comment;
-import com.example.opensource_blog.domain.hashtag.*;
 import com.example.opensource_blog.domain.post.PostImagesRepository;
 import com.example.opensource_blog.domain.post.PostRepository;
 import com.example.opensource_blog.domain.post.Post;
@@ -9,8 +7,6 @@ import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
-import com.example.opensource_blog.dto.response.PostResponseDTO;
-import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,16 +18,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final HashTagRepository hashTagRepository;
     private final PostImagesRepository postImagesRepository;
     private final UserRepository userRepository;
     private final PostImageService postImageService;
-    private final PostHashTagRepository postHashTagRepository;
-
 
     @Transactional
     public Page<PostListResponseDTO> getAllPosts(Pageable pageable) {
@@ -40,6 +34,15 @@ public class PostService {
                 .map(PostListResponseDTO::fromEntity) // 생성자를 통해 DTO 변환
                 .collect(Collectors.toList());
         return new PageImpl<>(postList, pageable, posts.getTotalElements());
+    }
+
+    @Transactional
+    public Page<PostListResponseDTO> search(String keyword, Pageable pageable) {
+        Page<Post> searchResult = postRepository.searchByKeyword(keyword, pageable);
+        List<PostListResponseDTO> postList = searchResult.getContent().stream()
+                .map(PostListResponseDTO::fromEntity) // 생성자를 통해 DTO 변환
+                .collect(Collectors.toList());
+        return new PageImpl<>(postList, pageable, searchResult.getTotalElements());
     }
 
     @Transactional
@@ -53,12 +56,6 @@ public class PostService {
         post.setUser(currentUser);
         // Post 저장
         Post savedPost = postRepository.save(post);
-        //해시태그 id로 해시태그 저장
-        postRequestDTO.getHashTagIds().stream().forEach(hashtagId -> {
-            HashTag hashTag = hashTagRepository.findById(hashtagId).orElseThrow(() -> new IllegalArgumentException("hashTag not found" + hashtagId));
-            PostHashTag postHashTag = PostHashTag.of(post, hashTag);
-            postHashTagRepository.save(postHashTag);
-        });
         // 이미지 파일 저장 처리
         postImageService.saveImages(images, savedPost);
 

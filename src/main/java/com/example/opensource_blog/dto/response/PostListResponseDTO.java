@@ -44,9 +44,9 @@ public class PostListResponseDTO {
                 .postWriter(post.getUser().getUsername())
                 .content(post.getContent())
                 .restaurant(post.getRestaurant())
-/*                .postImage(post.getImages() != null
+                    .postImage(post.getImages() != null
                         ? post.getImages().getFirst().getImageData() // 첫 번째 이미지의 바이트 데이터 가져오기
-                        : null)*/
+                        : null)
                 .hashTags(HashTagDto.fromPostHashTags(post.getPostHashTags()))
                 .build();
     }
