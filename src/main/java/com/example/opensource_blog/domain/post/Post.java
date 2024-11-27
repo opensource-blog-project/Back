@@ -1,5 +1,6 @@
 package com.example.opensource_blog.domain.post;
 
+import com.example.opensource_blog.domain.hashtag.PostHashTag;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.comment.Comment;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -39,5 +40,8 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @BatchSize(size = 10)
     public List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<PostHashTag> postHashTags = new ArrayList<>();
 
 }
