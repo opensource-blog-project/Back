@@ -25,9 +25,6 @@ import org.springframework.web.filter.CorsFilter;
 public class securityConfig {
 
     @Autowired
-    private CorsFilter corsFilter;
-
-    @Autowired
     private CustomJwtFilter customJwtFilter;
 
     @Autowired
@@ -44,9 +41,10 @@ public class securityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(Customizer.withDefaults());
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
-        http.cors(cors -> cors.disable());
+
         http.addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exception -> {
