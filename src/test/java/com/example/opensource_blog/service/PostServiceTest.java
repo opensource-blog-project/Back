@@ -1,4 +1,4 @@
-package com.example.opensource_blog.service.post;
+package com.example.opensource_blog.service;
 
 import com.example.opensource_blog.domain.hashtag.*;
 import com.example.opensource_blog.domain.post.Post;
@@ -8,6 +8,8 @@ import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
+import com.example.opensource_blog.service.post.PostImageService;
+import com.example.opensource_blog.service.post.PostService;
 import com.example.opensource_blog.service.user.UserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
