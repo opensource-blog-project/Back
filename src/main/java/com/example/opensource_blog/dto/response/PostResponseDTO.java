@@ -2,6 +2,7 @@ package com.example.opensource_blog.dto.response;
 
 import com.example.opensource_blog.domain.hashtag.HashTagDto;
 import com.example.opensource_blog.domain.post.Post;
+import com.example.opensource_blog.domain.post.PostImages;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,17 +21,17 @@ public class PostResponseDTO {
     private String postWriter;
     private String content;
     private String restaurant;
-    private byte[] postImage;
+    private List<byte[]> postImages;
     private List<HashTagDto> hashTags;
 
     @Builder
-    public PostResponseDTO(int postId, String title, String postWriter, String content, String restaurant, byte[] postImage, List<HashTagDto> hashTags) {
+    public PostResponseDTO(int postId, String title, String postWriter, String content, String restaurant, List<byte[]> postImages, List<HashTagDto> hashTags) {
         this.postId = postId;
         this.title = title;
         this.postWriter = postWriter;
         this.content = content;
         this.restaurant = restaurant;
-        this.postImage = postImage;
+        this.postImages = postImages;
         this.hashTags = hashTags;
     }
 
@@ -43,8 +44,8 @@ public class PostResponseDTO {
                 .postWriter(post.getUser().getUsername())
                 .content(post.getContent())
                 .restaurant(post.getRestaurant())
-                .postImage(post.getImages() != null
-                        ? post.getImages().getFirst().getImageData() // 첫 번째 이미지의 바이트 데이터 가져오기
+                .postImages(post.getImages() != null
+                        ? post.getImages().stream().map(PostImages::getImageData).collect(Collectors.toList())
                         : null)
                 .hashTags(HashTagDto.fromPostHashTags(post.getPostHashTags()))
                 .build();
