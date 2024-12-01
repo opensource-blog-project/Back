@@ -1,6 +1,7 @@
 package com.example.opensource_blog.domain.post;
 
 import com.example.opensource_blog.domain.hashtag.PostHashTag;
+import com.example.opensource_blog.domain.likes.Like;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.comment.Comment;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -24,10 +25,11 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)  // 외래 키 매핑
     private UserAccount user;  // User 엔티티와 매핑
 
+
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(name="content", nullable = false)
     private String content;
 
     @Column(nullable = false)
@@ -41,7 +43,19 @@ public class Post {
     @BatchSize(size = 10)
     public List<Comment> comments = new ArrayList<>();
 
+
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<PostHashTag> postHashTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<Like> likes = new ArrayList<>();
+
+//    private boolean saved;
+
+
+//    public void setSaved(boolean saved) {
+//        this.saved = saved;
+//    }
+
 
 }

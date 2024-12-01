@@ -30,7 +30,7 @@ public class CommentController {
     @PostMapping("/create")
     public ResponseEntity<ResCommentDto> create(
             @AuthenticationPrincipal UserInfo userInfo,
-            @PathVariable int postId,
+            @PathVariable("postId") int postId,
             @RequestBody ReqCommentDto reqCommentDto) {
 
         ResCommentDto saveCommentDTO = commentService.create(postId, userInfo, reqCommentDto);
