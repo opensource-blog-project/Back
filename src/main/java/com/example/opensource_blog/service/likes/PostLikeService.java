@@ -7,6 +7,7 @@ import com.example.opensource_blog.domain.likes.LikeRepository;
 
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
+import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +25,11 @@ public class PostLikeService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void pushLike(int postId,String userId) {
+    public void pushLike(int postId, UserInfo userInfo) {
         log.info("{} : {}",getClass().getSimpleName(),"pushLike(Long,String)");
 
-
         var post = postRepository.findById(postId).orElseThrow(EntityNotFoundException::new);
-        var usrAccount =  userRepository.findByUserId(userId).orElseThrow(EntityNotFoundException::new);
+        var usrAccount =  userRepository.findByUserId(userInfo.getUsername()).orElseThrow(EntityNotFoundException::new);
         Optional<Like> alreadyPushedLike = alreadyPushedLike(post, usrAccount);
 
         if(alreadyPushedLike.isPresent()) {
@@ -38,6 +38,11 @@ public class PostLikeService {
             Like like = Like.of(post, usrAccount);
             likeRepository.save(like);
         }
+    }
+    public int getLikeCountByPostId(int postId) {
+        if(!postRepository.existsById(postId))
+            throw new IllegalArgumentException("post not founded"+postId);
+        return likeRepository.countByPost_id(postId);
     }
     private Optional<Like> alreadyPushedLike(Post post, UserAccount userAccount) {
         log.info("이미 눌린 '좋아요'인지 체크하는 로직 실행");
