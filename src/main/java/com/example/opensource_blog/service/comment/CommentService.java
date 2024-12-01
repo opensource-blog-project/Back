@@ -13,9 +13,6 @@ import jakarta.persistence.EntityNotFoundException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,12 +27,12 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public Page<ResCommentDto> getAllComments(int postId, Pageable pageable) {
-        Page<Comment> comments = commentRepository.findAllByPostIdWithUserAndPost(postId, pageable);
-        List<ResCommentDto> commentList = comments.getContent().stream()
+    public List<ResCommentDto> getAllComments(int postId) {
+        List<Comment> comments = commentRepository.findAllByPostIdWithUserAndPost(postId);
+        List<ResCommentDto> commentList = comments.stream()
                 .map(ResCommentDto::fromEntity)
                 .collect(Collectors.toList());
-        return new PageImpl<>(commentList, pageable, comments.getTotalElements());
+        return commentList;
     }
 
     public ResCommentDto create(int postId, UserInfo userInfo, ReqCommentDto reqCommentDto) {

@@ -1,6 +1,5 @@
 package com.example.opensource_blog.service.hashtag;
 
-import com.example.opensource_blog.domain.hashtag.HashTag;
 import com.example.opensource_blog.domain.hashtag.HashTagRepository;
 import com.example.opensource_blog.domain.hashtag.PostHashTag;
 import com.example.opensource_blog.domain.hashtag.PostHashTagRepository;
@@ -9,9 +8,6 @@ import com.example.opensource_blog.domain.post.PostRepository;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +22,14 @@ public class PostHashTageService {
 
 
     @Transactional
-    public Page<PostListResponseDTO> getPostsByHashTag(Long hashTagId,Pageable pageable) {
-        Page<Post> posts = postHashTagRepository.findPostsByHashTagId(hashTagId,pageable);
-        List<PostListResponseDTO> postList = posts.getContent().stream()
+    public List<PostListResponseDTO> getPostsByHashTag(Long hashTagId) {
+        List<Post> posts = postHashTagRepository.findPostsByHashTagId(hashTagId);
+        List<PostListResponseDTO> postList = posts.stream()
                 .map(PostListResponseDTO::fromEntity)
                 .collect(Collectors.toList());
-        return new PageImpl<>(postList,pageable,posts.getTotalElements());
+        return postList;
     }
+
     public List<PostHashTag> getPostHashTagFromPost(Post post) {
         List<PostHashTag> postHashTags = postHashTagRepository.findByPost(post);
         return postHashTags;

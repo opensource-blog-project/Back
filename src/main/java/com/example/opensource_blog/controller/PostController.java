@@ -2,24 +2,15 @@ package com.example.opensource_blog.controller;
 
 import com.example.opensource_blog.domain.hashtag.HashTagDto;
 import com.example.opensource_blog.domain.hashtag.PostHashTag;
-import com.example.opensource_blog.domain.hashtag.PostHashTagRepository;
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
 import com.example.opensource_blog.dto.response.PostResponseDTO;
-import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.hashtag.HashTageService;
 import com.example.opensource_blog.service.hashtag.PostHashTageService;
 import com.example.opensource_blog.service.post.PostService;
-import com.example.opensource_blog.jwt.TokenProvider;
 import com.example.opensource_blog.service.user.UserInfo;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,21 +26,18 @@ public class PostController {
     private final PostService postService;
     private final HashTageService hashTageService;
     private final PostHashTageService postHashTageService;
-    private final TokenProvider tokenprovider; //jwt 유틸리티
 
     @GetMapping("/list")
-    public ResponseEntity<Page<PostListResponseDTO>> postList(
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
-        Page<PostListResponseDTO> postList = postService.getAllPosts(pageable);
+    public ResponseEntity<List<PostListResponseDTO>> postList() {
+        List<PostListResponseDTO> postList = postService.getAllPosts();
         return ResponseEntity.status(HttpStatus.OK).body(postList);
     }
+
     @GetMapping("/search-hashtag")
-    public ResponseEntity<Page<PostListResponseDTO>> getPostsByHashTagName(
-            @RequestParam String hashTagName,
-            @PageableDefault(size = 10,sort = "postId",direction = Sort.Direction.DESC)Pageable pageable) {
+    public ResponseEntity<List<PostListResponseDTO>> getPostsByHashTagName(
+            @RequestParam String hashTagName) {
         HashTagDto hashTag = hashTageService.getHashTagFromName(hashTagName);
-        Page<PostListResponseDTO> posts = postHashTageService.getPostsByHashTag(hashTag.getHashTagId(), pageable);
+        List<PostListResponseDTO> posts = postHashTageService.getPostsByHashTag(hashTag.getHashTagId());
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
