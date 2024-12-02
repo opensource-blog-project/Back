@@ -1,10 +1,8 @@
-package com.example.opensource_blog;
+package com.example.opensource_blog.controller;
 
-import com.example.opensource_blog.controller.PostController;
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
-import com.example.opensource_blog.dto.response.PostResponseDTO;
 import com.example.opensource_blog.service.hashtag.HashTageService;
 import com.example.opensource_blog.service.hashtag.PostHashTageService;
 import com.example.opensource_blog.service.post.PostService;
@@ -13,20 +11,14 @@ import com.example.opensource_blog.service.user.UserInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
