@@ -30,4 +30,11 @@ public class HashTag {
 
     @OneToMany(mappedBy = "hashTag",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<PostHashTag> postHashTags = new ArrayList<>();
+
+    public static HashTag of(String name, HashTagType hashTagType) {
+        HashTag hashTag = new HashTag();
+        hashTag.name = name;
+        hashTag.hashTagType = hashTagType;
+        return hashTag;
+    }
 }

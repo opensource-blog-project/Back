@@ -101,5 +101,4 @@ public class PostControllerTest {
 
 		verify(postService, times(1)).createPost(any(), any(), any());
 	}
-
 }
