@@ -2,15 +2,15 @@ package com.example.opensource_blog.dto.response;
 
 import com.example.opensource_blog.domain.hashtag.HashTagDto;
 import com.example.opensource_blog.domain.post.Post;
-import com.example.opensource_blog.domain.post.PostImages;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,7 +37,8 @@ public class PostListResponseDTO {
 
     // Entity -> DTO
     public static PostListResponseDTO fromEntity(Post post) {
-
+        log.info("Mapping Post entity to DTO: postId={}, title={}, postWriter={}",
+                post.getPostId(), post.getTitle(), post.getUser().getUsername());
         return PostListResponseDTO.builder()
                 .postId(post.getPostId())
                 .title(post.getTitle())

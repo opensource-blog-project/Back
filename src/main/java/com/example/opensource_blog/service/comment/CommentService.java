@@ -1,7 +1,7 @@
 package com.example.opensource_blog.service.comment;
 
-import com.example.opensource_blog.domain.comment.CommentRepository;
 import com.example.opensource_blog.domain.comment.Comment;
+import com.example.opensource_blog.domain.comment.CommentRepository;
 import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.domain.post.PostRepository;
 import com.example.opensource_blog.domain.users.UserAccount;
@@ -10,9 +10,10 @@ import com.example.opensource_blog.dto.request.ReqCommentDto;
 import com.example.opensource_blog.dto.response.ResCommentDto;
 import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.persistence.EntityNotFoundException;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,5 +65,10 @@ public class CommentService {
 
     public void delete(int commentId) {
         commentRepository.deleteById(commentId);
+    }
+
+    public Page<ResCommentDto> getCommentsByUser(String userId, Pageable pageable) {
+        return commentRepository.findByUserUsername(userId, pageable)
+                .map(ResCommentDto::fromEntity);
     }
 }

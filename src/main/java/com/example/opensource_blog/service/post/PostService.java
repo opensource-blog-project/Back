@@ -1,16 +1,19 @@
 package com.example.opensource_blog.service.post;
 
 import com.example.opensource_blog.domain.hashtag.*;
+import com.example.opensource_blog.domain.post.Post;
 import com.example.opensource_blog.domain.post.PostImagesRepository;
 import com.example.opensource_blog.domain.post.PostRepository;
-import com.example.opensource_blog.domain.post.Post;
-import com.example.opensource_blog.dto.request.PostRequestDTO;
+import com.example.opensource_blog.domain.post.SavedPostRepository;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
+import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
 import com.example.opensource_blog.service.user.UserInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
+
 public class PostService {
     private final PostRepository postRepository;
     private final HashTagRepository hashTagRepository;
@@ -25,6 +29,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final PostImageService postImageService;
     private final PostHashTagRepository postHashTagRepository;
+    private final SavedPostRepository savePostRepository;
 
 
     @Transactional
@@ -117,4 +122,33 @@ public class PostService {
 //            }
 //        }
 //    }
+
+//    public void savePost(int postId) {
+//        Optional<Post> optionalPost = postRepository.findById(postId);
+//        if (optionalPost.isPresent()) {
+//            Post post = optionalPost.get();
+//            post.setSaved(true);
+//            postRepository.save(post);
+//        } else {
+//            throw new RuntimeException("Post not found");
+//        }
+//    }
+
+    public Page<PostListResponseDTO> getPostsByUser(String userId, Pageable pageable) {
+        return postRepository.findByUser_Id(userId, pageable)
+                .map(PostListResponseDTO::fromEntity);
+    }
+
+
+    public Page<PostListResponseDTO> getLikedPostsByUser(String userId, Pageable pageable) {
+        return postRepository.findLikedPostsByUser(userId, pageable)
+                .map(PostListResponseDTO::fromEntity);
+    }
+
+
+    public Page<PostListResponseDTO> getSavedPostsByUser(String userId, Pageable pageable) {
+        Page<Post> savedPosts = savePostRepository.findSavedPostsByUser(userId, pageable);
+        return savedPosts.map(PostListResponseDTO::fromEntity);
+    }
+
 }
