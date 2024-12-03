@@ -18,7 +18,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user")
     List<Post> findAllWithUser();
-    Page<Post> findAllWithUser(Pageable pageable);
+//    Page<Post> findAllWithUser(Pageable pageable);
 
 
 
