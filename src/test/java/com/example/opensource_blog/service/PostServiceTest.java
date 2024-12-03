@@ -2,12 +2,14 @@ package com.example.opensource_blog.service;
 
 import com.example.opensource_blog.domain.hashtag.*;
 import com.example.opensource_blog.domain.post.Post;
+import com.example.opensource_blog.domain.post.PostImages;
 import com.example.opensource_blog.domain.post.PostImagesRepository;
 import com.example.opensource_blog.domain.post.PostRepository;
 import com.example.opensource_blog.domain.users.UserAccount;
 import com.example.opensource_blog.domain.users.UserRepository;
 import com.example.opensource_blog.dto.request.PostRequestDTO;
 import com.example.opensource_blog.dto.response.PostListResponseDTO;
+import com.example.opensource_blog.dto.response.PostResponseDTO;
 import com.example.opensource_blog.service.post.PostImageService;
 import com.example.opensource_blog.service.post.PostService;
 import com.example.opensource_blog.service.user.UserInfo;
@@ -17,7 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +66,10 @@ class PostServiceTest {
         post1.setContent("Content 1");
         post1.setRestaurant("Restaurant 1");
         post1.setUser(new UserAccount("user1", "password", "User1"));
+        PostImages postImage = new PostImages();
+        postImage.setImageData(new byte[]{1, 2, 3});
+        post1.setImages(List.of(postImage));
+
 
         Post post2 = new Post();
         post2.setPostId(2);
@@ -69,6 +77,7 @@ class PostServiceTest {
         post2.setContent("Content 2");
         post2.setRestaurant("Restaurant 2");
         post2.setUser(new UserAccount("user2", "password", "User2"));
+        post2.setImages(List.of(postImage));
 
         when(postRepository.findAllWithUser()).thenReturn(List.of(post1, post2));
 
@@ -94,6 +103,7 @@ class PostServiceTest {
         UserInfo userInfo = new UserInfo(new UserAccount("user1", "password", "User1"));
         Post post = postRequestDTO.toEntity(postRequestDTO);
         UserAccount user = new UserAccount("user1", "password", "User1");
+        post.setUser(user);
 
         HashTag hashTag1 = HashTag.of("Tag1", HashTagType.CATEGORY);
         HashTag hashTag2 = HashTag.of("Tag2", HashTagType.UTILITY);
@@ -119,28 +129,38 @@ class PostServiceTest {
     void updatePost_ShouldUpdatePost() {
         // Given
         int postId = 1;
+
+        // PostRequestDTO 설정
         PostRequestDTO postRequestDTO = new PostRequestDTO();
         postRequestDTO.setTitle("Updated Post");
         postRequestDTO.setContent("Updated Content");
         postRequestDTO.setRestaurant("Updated Restaurant");
 
+        // 기존 Post 객체 생성
         Post post = new Post();
         post.setPostId(postId);
         post.setTitle("Old Title");
         post.setContent("Old Content");
         post.setRestaurant("Old Restaurant");
+        List<MultipartFile> images = List.of(mock(MultipartFile.class)); // 비어 있지 않은 리스트
 
-        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
+
+        // Mocking 동작
+        when(postRepository.findById(eq(postId))).thenReturn(Optional.of(post));
+        when(postRepository.save(any(Post.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        doNothing().when(postImageService).updatePostImages(any(Post.class), anyList());
 
         // When
-        Post updatedPost = postService.updatePost(postId, postRequestDTO, List.of(), new UserInfo(UserAccount.of("userId","password","username")));
+        Post updatedPost = postService.updatePost(postId, postRequestDTO, images, new UserInfo(UserAccount.of("userId", "password", "username")));
 
         // Then
+        assertNotNull(updatedPost); // 업데이트된 Post가 null이 아님을 확인
         assertEquals("Updated Post", updatedPost.getTitle());
         assertEquals("Updated Content", updatedPost.getContent());
         assertEquals("Updated Restaurant", updatedPost.getRestaurant());
-        verify(postImageService, times(1)).updatePostImages(post, anyList());
+        verify(postImageService, times(1)).updatePostImages(eq(post), anyList()); // 이미지 업데이트 호출 검증
     }
+
 
     @Test
     @DisplayName("deletePost 메서드를 호출하면 게시글을 삭제한다.")

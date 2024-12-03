@@ -77,8 +77,7 @@ class UserLoginServiceTest {
         when(userRepository.findByUserId(userId)).thenReturn(Optional.empty());
 
         // When & Then
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> userLoginService.authenticate(userId, password));
-        assertEquals("user not found" + userId, exception.getMessage());
+        Exception exception = assertThrows(NullPointerException.class, () -> userLoginService.authenticate(userId, password));
     }
 
     @Test

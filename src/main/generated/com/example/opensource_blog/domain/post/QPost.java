@@ -30,6 +30,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final ListPath<com.example.opensource_blog.domain.likes.Like, com.example.opensource_blog.domain.likes.QLike> likes = this.<com.example.opensource_blog.domain.likes.Like, com.example.opensource_blog.domain.likes.QLike>createList("likes", com.example.opensource_blog.domain.likes.Like.class, com.example.opensource_blog.domain.likes.QLike.class, PathInits.DIRECT2);
 
+    public final ListPath<com.example.opensource_blog.domain.hashtag.PostHashTag, com.example.opensource_blog.domain.hashtag.QPostHashTag> postHashTags = this.<com.example.opensource_blog.domain.hashtag.PostHashTag, com.example.opensource_blog.domain.hashtag.QPostHashTag>createList("postHashTags", com.example.opensource_blog.domain.hashtag.PostHashTag.class, com.example.opensource_blog.domain.hashtag.QPostHashTag.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> postId = createNumber("postId", Integer.class);
 
     public final StringPath restaurant = createString("restaurant");
