@@ -16,8 +16,7 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @Query("SELECT c FROM Comment c JOIN FETCH c.user JOIN FETCH c.post WHERE c.id = :id")
     Optional<Comment> findByIdWithUserAndPost(@Param("id") int id);
 
-
     @Query("SELECT c FROM Comment c JOIN c.user u WHERE u.userId = :userId")
-    Page<Comment> findByUserUsername(@Param("userId") String userId, Pageable pageable);
+    List<Comment> findByUserUsername(@Param("userId") String userId);
 
 }

@@ -18,16 +18,14 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT p FROM Post p JOIN FETCH p.user")
     List<Post> findAllWithUser();
-    Page<Post> findAllWithUser(Pageable pageable);
-
 
 
     @Query("SELECT p FROM Post p JOIN p.user u WHERE u.userId = :userId")
-    Page<Post> findByUser_Id(@Param("userId") String userId, Pageable pageable);
+    List<Post> findByUser_Id(@Param("userId") String userId);
 
 
     @Query("SELECT p FROM Post p JOIN p.likes l WHERE l.user.userId = :userId")
-    Page<Post> findLikedPostsByUser(@Param("userId") String username, Pageable pageable);
+    List<Post> findLikedPostsByUser(@Param("userId") String username);
 
 
 }

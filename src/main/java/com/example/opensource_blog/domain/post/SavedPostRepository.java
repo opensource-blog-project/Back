@@ -22,5 +22,5 @@ public interface SavedPostRepository extends JpaRepository<SavePost, Integer> {
     void deleteByPostIdAndUsername(@Param("userId")String userId,@Param("postId") Integer postId);
 
     @Query("SELECT sp.post FROM SavePost sp WHERE sp.user.userId = :userId")
-    Page<Post> findSavedPostsByUser(@Param("userId") String userId, Pageable pageable);
+    List<Post> findSavedPostsByUser(@Param("userId") String userId);
 }
