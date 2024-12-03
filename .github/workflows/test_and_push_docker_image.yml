@@ -26,6 +26,9 @@ jobs:
           distribution: 'temurin'
 
       # 3. Gradle 테스트 실행
+      - name: Give execute permission to gradlew
+        run: chmod +x ./gradlew # gradlew에 실행 권한 부여    
+      
       - name: Run tests
         run: ./gradlew test
 
