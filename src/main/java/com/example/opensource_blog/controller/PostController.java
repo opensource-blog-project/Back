@@ -9,8 +9,10 @@ import com.example.opensource_blog.dto.response.PostResponseDTO;
 import com.example.opensource_blog.service.hashtag.HashTageService;
 import com.example.opensource_blog.service.hashtag.PostHashTageService;
 import com.example.opensource_blog.service.post.PostService;
+import com.example.opensource_blog.service.post.SavedPostService;
 import com.example.opensource_blog.service.user.UserInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +28,8 @@ public class PostController {
     private final PostService postService;
     private final HashTageService hashTageService;
     private final PostHashTageService postHashTageService;
+    @Autowired
+    private SavedPostService savedPostService;
 
     @GetMapping("/list")
     public ResponseEntity<List<PostListResponseDTO>> postList() {
@@ -126,6 +130,31 @@ public class PostController {
         }
         PostResponseDTO responseDTO = PostResponseDTO.fromEntity(post);
         return ResponseEntity.ok(responseDTO);
+    }
+
+    //게시글 저장
+    @PostMapping("/{postId}/save")
+    public ResponseEntity<String> savePost(
+            @AuthenticationPrincipal UserInfo userInfo,
+            @PathVariable("postId") Integer postId) {
+        try {
+            savedPostService.savePost(userInfo.getUsername(), postId);
+            return ResponseEntity.ok("Post saved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{postId}/unsave")
+    public ResponseEntity<String> removeSavedPost(
+            @AuthenticationPrincipal UserInfo userInfo,
+            @PathVariable("postId") Integer postId) {
+        try {
+            savedPostService.removeSavedPost(userInfo.getUsername(), postId);
+            return ResponseEntity.ok("Post unsaved successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
 }
