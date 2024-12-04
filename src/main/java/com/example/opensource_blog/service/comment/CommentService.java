@@ -67,8 +67,9 @@ public class CommentService {
         commentRepository.deleteById(commentId);
     }
 
-    public Page<ResCommentDto> getCommentsByUser(String userId, Pageable pageable) {
-        return commentRepository.findByUserUsername(userId, pageable)
-                .map(ResCommentDto::fromEntity);
+    public List<ResCommentDto> getCommentsByUser(String userId) {
+        return commentRepository.findByUserUsername(userId).stream()
+                .map(ResCommentDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

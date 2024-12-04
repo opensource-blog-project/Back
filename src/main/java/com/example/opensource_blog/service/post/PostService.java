@@ -134,21 +134,25 @@ public class PostService {
 //        }
 //    }
 
-    public Page<PostListResponseDTO> getPostsByUser(String userId, Pageable pageable) {
-        return postRepository.findByUser_Id(userId, pageable)
-                .map(PostListResponseDTO::fromEntity);
+    public List<PostListResponseDTO> getPostsByUser(String userId) {
+        return postRepository.findByUser_Id(userId).stream()
+                .map(PostListResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
 
-    public Page<PostListResponseDTO> getLikedPostsByUser(String userId, Pageable pageable) {
-        return postRepository.findLikedPostsByUser(userId, pageable)
-                .map(PostListResponseDTO::fromEntity);
+    public List<PostListResponseDTO> getLikedPostsByUser(String userId) {
+        return postRepository.findLikedPostsByUser(userId).stream()
+                .map(PostListResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
 
-    public Page<PostListResponseDTO> getSavedPostsByUser(String userId, Pageable pageable) {
-        Page<Post> savedPosts = savePostRepository.findSavedPostsByUser(userId, pageable);
-        return savedPosts.map(PostListResponseDTO::fromEntity);
+    public List<PostListResponseDTO> getSavedPostsByUser(String userId) {
+        List<Post> savedPosts = savePostRepository.findSavedPostsByUser(userId);
+        return savedPosts.stream()
+                .map(PostListResponseDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
 }
