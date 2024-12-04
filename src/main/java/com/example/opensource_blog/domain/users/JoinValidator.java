@@ -33,18 +33,22 @@ public class JoinValidator implements Validator {
          * 1. 아이디 중복 여부 체크
          * 2. 비밀번호 및 비밀번호 확인 일치 여부
          */
-        String username = form.username();
+        String userId = form.userId();
         String password = form.password();
+        String username = form.username();
         String confirmPassword = form.confirmPassword();
 
-        if(username!=null && !username.isBlank() && !pattern.matcher(username).matches()) {
-            errors.rejectValue("username","username.invalid.format");
+        if(userId!=null && !userId.isBlank() && !pattern.matcher(userId).matches()) {
+            errors.rejectValue("userId","userId.invalid.format");
         }
         if(password!=null && !password.isBlank() && !pattern.matcher(password).matches()) {
             errors.rejectValue("password","password.invalid.format");
         }
         //1. 아이디 중복 여부 체크
-        if(username!=null && !username.isBlank() && userRepository.existsByUsername(username)) {
+        if(userId!=null && !userId.isBlank() && userRepository.existsByUserId(userId)) {
+            errors.rejectValue("userId","Duplicate");
+        }
+        if(username!=null & !username.isBlank() && userRepository.existsByUsername(username)) {
             errors.rejectValue("username","Duplicate");
         }
         //2. 비밀번호 및 비밀번호 확인 일치 여부

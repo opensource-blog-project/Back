@@ -21,11 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserLoginService loginService;
-    private final UserInfoService infoService;
     private final UserJoinService joinService;
 
     /**
@@ -37,7 +36,7 @@ public class UserController {
 
         // 유효성 검사 처리
         errorProcess(errors);
-        ResponseLogin token = loginService.authenticate(requestLogin.username(),requestLogin.password());
+        ResponseLogin token = loginService.authenticate(requestLogin.userId(),requestLogin.password());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(CustomJwtFilter.AUTHORIZATION_HEADER,"Bearer "+token.accessToken());

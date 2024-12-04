@@ -1,11 +1,16 @@
 package com.example.opensource_blog.domain.users;
 
 
+import com.example.opensource_blog.domain.comment.Comment;
+import com.example.opensource_blog.domain.post.Post;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ToString
 @Getter
@@ -15,23 +20,29 @@ import lombok.ToString;
 public class UserAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int userId;
-
-    @Column(unique = true, nullable = false, updatable = false)
-    private String username;
+    private String userId;
 
     @Column(nullable = false)
     private String password;
 
-    public UserAccount(String username, String password) {
-        this.username = username;
+    @Column(unique = true, nullable = false, updatable = false)
+    private String username;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<Comment> comments = new ArrayList<>();
+
+    public UserAccount(String userId, String password, String username) {
+        this.userId = userId;
         this.password = password;
+        this.username = username;
     }
 
-    public static UserAccount of(String username, String password) {
-        return new UserAccount(username, password);
+    public static UserAccount of(String userId, String password, String username) {
+        return new UserAccount(userId,password,username);
     }
 
     public void updatePassword(String encodedPwd) {

@@ -25,9 +25,6 @@ import org.springframework.web.filter.CorsFilter;
 public class securityConfig {
 
     @Autowired
-    private CorsFilter corsFilter;
-
-    @Autowired
     private CustomJwtFilter customJwtFilter;
 
     @Autowired
@@ -44,20 +41,20 @@ public class securityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
+        http.cors(Customizer.withDefaults());
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
 
-        http.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-                        .addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
-                        .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .exceptionHandling(exception -> {
-                                    exception.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler);
-                                });
+        http.addFilterBefore(customJwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(jwtAuthenticationEntryPoint).accessDeniedHandler(jwtAccessDeniedHandler);
+                });
         http.authorizeHttpRequests(c -> {
-            c.requestMatchers("/api/v1/user",
-                            "/api/v1/user/token",
-                            "/api/v1/user/login",
-                            "/api/v1/user/exists/**").permitAll()
+            c.requestMatchers("/api/user",
+                            "/api/user/token",
+                            "/api/user/login",
+                            "/api/user/exists/**").permitAll()
                     .anyRequest().authenticated();
         });
         return http.build();

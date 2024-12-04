@@ -6,13 +6,16 @@ import jakarta.validation.constraints.NotBlank;
 public record RequestJoin(
 
         @NotBlank
-        String username,
+        String userId,
 
         @NotBlank
         String password,
 
         @NotBlank
         String confirmPassword,
+
+        @NotBlank
+        String username,
 
         @AssertTrue
         boolean agree
