@@ -78,6 +78,7 @@ class UserLoginServiceTest {
 
         // When & Then
         Exception exception = assertThrows(NullPointerException.class, () -> userLoginService.authenticate(userId, password));
+
     }
 
     @Test
