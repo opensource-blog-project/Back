@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "1234" # 루트 비밀번호
+            - name: MYSQL_DATABASE
+              value: "opensourcedb"  # 기본 데이터베이스 이름
+            - name: MYSQL_USER
+              value: "user"        # 사용자 이름
+            - name: MYSQL_PASSWORD
+              value: "1234"    # 사용자 비밀번호
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain # 데이터를 유지하기 위한 설정
+  hostPath: # 로컬 저장소 경로
+    path: /mnt/data/mysql # 로컬 환경에서 데이터를 저장할 경로
+  claimRef: # PVC와 연결
+    namespace: default      # PVC가 있는 네임스페이스
+    name: mysql-pvc         # PVC 이름

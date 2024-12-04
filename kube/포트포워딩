@@ -1,0 +1,4 @@
+kubectl port-forward service/backend-service 8080:8080
+
+nohup kubectl port-forward service/backend-service 8080:8080 > port-forward.log 2>&1 &
+

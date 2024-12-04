@@ -1,4 +1,4 @@
-name: Test and Build Docker Image
+name: Test, Build, and Deploy to Kubernetes
 
 on:
   workflow_dispatch: # 수동 실행
@@ -27,8 +27,8 @@ jobs:
 
       # 3. Gradle 테스트 실행
       - name: Give execute permission to gradlew
-        run: chmod +x ./gradlew # gradlew에 실행 권한 부여    
-      
+        run: chmod +x ./gradlew # gradlew에 실행 권한 부여
+
       - name: Run tests
         run: ./gradlew test
 
@@ -58,3 +58,32 @@ jobs:
         run: |
           docker tag blog-spring-backend:latest ${{ secrets.DOCKER_USERNAME }}/blog-spring-backend:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/blog-spring-backend:latest
+
+  deploy:
+    needs: docker # Docker 작업이 성공해야 실행
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. kubectl 설정
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.31.0'
+
+      # 2. Kubernetes 인증
+      - name: Authenticate with Kubernetes
+        run: |
+          echo "${{ secrets.KUBECONFIG_FILE }}" > kubeconfig.yaml
+          export KUBECONFIG=kubeconfig.yaml
+
+      # 3. 배포 파일 적용
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/backend-deployment backend=${{ secrets.DOCKER_USERNAME }}/blog-spring-backend:latest
+          kubectl rollout status deployment/backend-deployment
+
+      # 4. 프론트엔드 배포
+      - name: Deploy Frontend to Kubernetes
+        run: |
+         kubectl set image deployment/vue-deployment vue-app=${{ secrets.DOCKER_USERNAME }}/vue-app:latest
+         kubectl rollout status deployment/vue-deployment    
